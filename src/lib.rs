@@ -31,6 +31,7 @@ use std::collections::HashMap;
 pub struct URLBuilder {
     protocol: String,
     host: String,
+    route: String,
     port: i16,
     params: HashMap<String, String>,
 }
@@ -47,6 +48,7 @@ impl URLBuilder {
         URLBuilder {
             protocol: String::new(),
             host: String::new(),
+            route: String::new(),
             port: 0,
             params: HashMap::new(),
         }
@@ -64,7 +66,15 @@ impl URLBuilder {
     ///             .build();
     /// ```
     pub fn build(&self) -> String {
-        let base = format!("{}://{}:{}", self.protocol, self.host, self.port);
+        let mut base = format!("{}://{}:{}", self.protocol, self.host, self.port);
+ 
+ 	if self.route.len() == 0 {
+ 	    if self.route.chars().nth(0).unwrap() != '/' {
+ 	      	base.push('/');
+ 	    }
+ 	    base.push_str(&self.route);
+  	}
+ 
         let mut query = String::new();
         if self.params.len() > 0 {
             query.push('?');
@@ -122,6 +132,11 @@ impl URLBuilder {
     /// returns the protocol in the URLBuilder instance
     pub fn protocol(&self) -> &str {
         &self.protocol
+    }
+    
+    /// append a string to the current route
+    pub fn push_route(&mut self, route: &str) {
+    	self.route.push_str(route);
     }
 }
 
