@@ -66,9 +66,13 @@ impl URLBuilder {
     ///             .build();
     /// ```
     pub fn build(&self) -> String {
-        let mut base = format!("{}://{}:{}", self.protocol, self.host, self.port);
+        let mut base = format!("{}://{}", self.protocol, self.host);
  
- 	if self.route.len() == 0 {
+ 	if self.port != 0 {
+ 	    base.push_str(&format!(":{}", self.port));
+ 	}
+ 
+ 	if self.route.len() != 0 {
  	    if self.route.chars().nth(0).unwrap() != '/' {
  	      	base.push('/');
  	    }
